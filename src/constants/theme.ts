@@ -1,0 +1,45 @@
+export const colors = {
+  bg: '#FAF8F3',
+  text: '#1F2B22',
+  textMuted: '#5B685A',
+  textFaint: '#8A9587',
+  textFainter: '#98A395',
+  green: '#2E7D53',
+  greenDark: '#1E5B3E',
+  greenBg: '#EFF6EF',
+  greenBorder: '#D8E7D8',
+  border: '#EBE8DF',
+  borderStrong: '#E2E0D7',
+  cream: '#F4F1E8',
+  amber: '#C98B2D',
+  amberText: '#A8761F',
+  amberBg: '#FDF8EE',
+  amberBorder: '#EDDFC2',
+  terracotta: '#C0674A',
+  terracottaText: '#B05A3D',
+  track: '#E7E4D9',
+  trackLight: '#EDEAE0',
+  dashedBorder: '#CFD6C9',
+  white: '#fff',
+  black: '#0E120F',
+} as const;
+
+export const fonts = {
+  headline: 'BricolageGrotesque_600SemiBold',
+  headlineBold: 'BricolageGrotesque_700Bold',
+  headlineMedium: 'BricolageGrotesque_500Medium',
+  body: 'AlbertSans_400Regular',
+  bodyMedium: 'AlbertSans_500Medium',
+  bodySemiBold: 'AlbertSans_600SemiBold',
+  bodyBold: 'AlbertSans_700Bold',
+} as const;
+
+export const fontAssets = {
+  BricolageGrotesque_500Medium: require('@expo-google-fonts/bricolage-grotesque/500Medium/BricolageGrotesque_500Medium.ttf'),
+  BricolageGrotesque_600SemiBold: require('@expo-google-fonts/bricolage-grotesque/600SemiBold/BricolageGrotesque_600SemiBold.ttf'),
+  BricolageGrotesque_700Bold: require('@expo-google-fonts/bricolage-grotesque/700Bold/BricolageGrotesque_700Bold.ttf'),
+  AlbertSans_400Regular: require('@expo-google-fonts/albert-sans/400Regular/AlbertSans_400Regular.ttf'),
+  AlbertSans_500Medium: require('@expo-google-fonts/albert-sans/500Medium/AlbertSans_500Medium.ttf'),
+  AlbertSans_600SemiBold: require('@expo-google-fonts/albert-sans/600SemiBold/AlbertSans_600SemiBold.ttf'),
+  AlbertSans_700Bold: require('@expo-google-fonts/albert-sans/700Bold/AlbertSans_700Bold.ttf'),
+};
