@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, fonts } from '@/constants/theme';
 import { BottomNav } from '@/components/ui';
+import { GOAL_LABELS, useUserPreferencesStore } from '@/stores/user-preferences-store';
 
 function Row({ label, value, last, danger }: { label: string; value?: string; last?: boolean; danger?: boolean }) {
   return (
@@ -17,6 +18,8 @@ function Row({ label, value, last, danger }: { label: string; value?: string; la
 export default function Profile() {
   const router = useRouter();
   const [notifications, setNotifications] = useState(true);
+  const goal = useUserPreferencesStore((s) => s.goal);
+  const diet = useUserPreferencesStore((s) => s.diet);
 
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
@@ -33,8 +36,8 @@ export default function Profile() {
 
         <Text style={styles.section}>MY GOALS</Text>
         <View style={styles.card}>
-          <Row label="Primary goal" value="Eat more balanced ›" />
-          <Row label="Diet preference" value="No preference ›" last />
+          <Row label="Primary goal" value={`${GOAL_LABELS[goal]} ›`} />
+          <Row label="Diet preference" value={`${diet} ›`} last />
         </View>
 
         <Text style={styles.section}>MELEO+</Text>

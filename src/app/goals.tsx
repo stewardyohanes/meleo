@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, fonts } from '@/constants/theme';
 import { OnboardingHeader, PrimaryButton } from '@/components/ui';
+import { useUserPreferencesStore } from '@/stores/user-preferences-store';
 
 const GOALS = [
   { key: 'balanced', emoji: '🥗', title: 'Eat More Balanced', desc: 'Build healthier everyday habits.' },
@@ -15,7 +15,8 @@ const GOALS = [
 
 export default function GoalSelection() {
   const router = useRouter();
-  const [selected, setSelected] = useState<(typeof GOALS)[number]['key']>('balanced');
+  const selected = useUserPreferencesStore((s) => s.goal);
+  const setSelected = useUserPreferencesStore((s) => s.setGoal);
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>

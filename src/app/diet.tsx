@@ -1,15 +1,16 @@
-import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, fonts } from '@/constants/theme';
 import { OnboardingHeader, PrimaryButton, TextButton } from '@/components/ui';
+import { useUserPreferencesStore } from '@/stores/user-preferences-store';
 
 const DIETS = ['No preference', 'Vegetarian', 'Vegan', 'Pescatarian', 'Halal'] as const;
 
 export default function DietaryPreference() {
   const router = useRouter();
-  const [selected, setSelected] = useState<(typeof DIETS)[number]>('No preference');
+  const selected = useUserPreferencesStore((s) => s.diet);
+  const setSelected = useUserPreferencesStore((s) => s.setDiet);
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>

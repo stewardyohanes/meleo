@@ -8,6 +8,14 @@ export type Diet =
   | "Pescatarian"
   | "Halal";
 
+export const GOAL_LABELS: Record<Goal, string> = {
+  balanced: "Eat More Balanced",
+  protein: "Get More Protein",
+  fiber: "Eat More Fiber",
+  veggies: "Eat More Vegetables",
+  sugar: "Reduce Added Sugar",
+};
+
 interface UserPreferencesState {
   goal: Goal;
   diet: Diet;
