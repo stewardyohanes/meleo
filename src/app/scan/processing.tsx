@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors, fonts } from '@/constants/theme';
 
 const STEPS = ['Identifying foods', 'Estimating portions', 'Checking nutrition', 'Building your Balance Score'];
 const STEP_MS = 550;
@@ -20,96 +19,46 @@ export default function Processing() {
   }, [step, router]);
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.card}>
-        <View style={styles.header}>
-          <View style={styles.spinner} />
-          <Text style={styles.headline}>Looking at your meal…</Text>
+    <View className="flex-1 bg-black">
+      <View className="absolute left-[28px] right-[28px] top-[50%] -translate-y-[120px] bg-[rgba(250,248,243,0.97)] rounded-[26px] p-[26px]">
+        <View className="flex-row items-center gap-[14px] mb-[22px]">
+          <View className="w-[34px] h-[34px] rounded-[17px] border-[3px] border-green-bg border-t-green" />
+          <Text className="font-headline text-[18px] text-text">Looking at your meal…</Text>
         </View>
 
-        <View style={{ gap: 13 }}>
+        <View className="gap-[13px]">
           {STEPS.map((label, i) => {
             const done = i < step;
             const active = i === step;
             return (
-              <View key={label} style={styles.row}>
+              <View key={label} className="flex-row items-center gap-[11px]">
                 {done ? (
-                  <View style={styles.doneDot}>
-                    <Text style={styles.doneCheck}>✓</Text>
+                  <View className="w-[20px] h-[20px] rounded-[10px] bg-green items-center justify-center">
+                    <Text className="text-white text-[11px]">✓</Text>
                   </View>
                 ) : active ? (
-                  <View style={styles.activeDot}>
-                    <View style={styles.activeInner} />
+                  <View className="w-[20px] h-[20px] rounded-[10px] border-[2.5px] border-green items-center justify-center">
+                    <View className="w-[7px] h-[7px] rounded-[3.5px] bg-green" />
                   </View>
                 ) : (
-                  <View style={styles.pendingDot} />
+                  <View className="w-[20px] h-[20px] rounded-[10px] border-2 border-[#D9DFD5]" />
                 )}
-                <Text style={[styles.rowLabel, done && styles.rowLabelDone, active && styles.rowLabelActive]}>{label}</Text>
+                <Text
+                  className={`text-[14px] ${
+                    done ? 'font-body-medium text-green' : active ? 'font-body-semibold text-text' : 'font-body text-[#9AA496]'
+                  }`}
+                >
+                  {label}
+                </Text>
               </View>
             );
           })}
         </View>
       </View>
 
-      <Pressable style={styles.cancel} onPress={() => router.back()}>
-        <Text style={styles.cancelText}>Cancel</Text>
+      <Pressable className="absolute left-0 right-0 bottom-[60px] items-center" onPress={() => router.back()}>
+        <Text className="font-body-semibold text-[14px] text-[rgba(255,255,255,0.85)]">Cancel</Text>
       </Pressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.black },
-  card: {
-    position: 'absolute',
-    left: 28,
-    right: 28,
-    top: '50%',
-    transform: [{ translateY: -120 }],
-    backgroundColor: 'rgba(250,248,243,0.97)',
-    borderRadius: 26,
-    padding: 26,
-  },
-  header: { flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 22 },
-  spinner: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    borderWidth: 3,
-    borderColor: colors.greenBg,
-    borderTopColor: colors.green,
-  },
-  headline: { fontFamily: fonts.headline, fontSize: 18, color: colors.text },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 11 },
-  doneDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: colors.green,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  doneCheck: { color: '#fff', fontSize: 11 },
-  activeDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2.5,
-    borderColor: colors.green,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  activeInner: { width: 7, height: 7, borderRadius: 3.5, backgroundColor: colors.green },
-  pendingDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#D9DFD5',
-  },
-  rowLabel: { fontFamily: fonts.body, fontSize: 14, color: '#9AA496' },
-  rowLabelDone: { fontFamily: fonts.bodyMedium, color: colors.green },
-  rowLabelActive: { fontFamily: fonts.bodySemiBold, color: colors.text },
-  cancel: { position: 'absolute', left: 0, right: 0, bottom: 60, alignItems: 'center' },
-  cancelText: { fontFamily: fonts.bodySemiBold, fontSize: 14, color: 'rgba(255,255,255,0.85)' },
-});

@@ -1,26 +1,11 @@
-import { StyleSheet, View } from 'react-native';
-import { colors } from '@/constants/theme';
+import { View } from 'react-native';
 
 export function OnboardingProgress({ step, total }: { step: number; total: number }) {
   return (
-    <View style={styles.progressRow}>
+    <View className="flex-row gap-[6px] mt-[14px] mb-[24px]">
       {Array.from({ length: total }).map((_, i) => (
-        <View key={i} style={[styles.progressBar, { backgroundColor: i < step ? colors.green : colors.borderStrong }]} />
+        <View key={i} className={`h-[4px] flex-1 rounded-[2px] ${i < step ? 'bg-green' : 'bg-border-strong'}`} />
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  progressRow: {
-    flexDirection: 'row',
-    gap: 6,
-    marginTop: 14,
-    marginBottom: 24,
-  },
-  progressBar: {
-    height: 4,
-    flex: 1,
-    borderRadius: 2,
-  },
-});

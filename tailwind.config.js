@@ -1,0 +1,42 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  presets: [require('nativewind/preset')],
+  theme: {
+    extend: {
+      colors: {
+        bg: '#FAF8F3',
+        text: '#1F2B22',
+        'text-muted': '#5B685A',
+        'text-faint': '#8A9587',
+        'text-fainter': '#98A395',
+        green: '#2E7D53',
+        'green-dark': '#1E5B3E',
+        'green-bg': '#EFF6EF',
+        'green-border': '#D8E7D8',
+        border: '#EBE8DF',
+        'border-strong': '#E2E0D7',
+        cream: '#F4F1E8',
+        amber: '#C98B2D',
+        'amber-text': '#A8761F',
+        'amber-bg': '#FDF8EE',
+        'amber-border': '#EDDFC2',
+        terracotta: '#C0674A',
+        'terracotta-text': '#B05A3D',
+        track: '#E7E4D9',
+        'track-light': '#EDEAE0',
+        'dashed-border': '#CFD6C9',
+      },
+      fontFamily: {
+        headline: ['BricolageGrotesque_600SemiBold'],
+        'headline-bold': ['BricolageGrotesque_700Bold'],
+        'headline-medium': ['BricolageGrotesque_500Medium'],
+        body: ['AlbertSans_400Regular'],
+        'body-medium': ['AlbertSans_500Medium'],
+        'body-semibold': ['AlbertSans_600SemiBold'],
+        'body-bold': ['AlbertSans_700Bold'],
+      },
+    },
+  },
+  plugins: [],
+};

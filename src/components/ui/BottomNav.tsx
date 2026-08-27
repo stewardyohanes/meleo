@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { useRouter } from 'expo-router';
-import { colors, fonts } from '@/constants/theme';
+import { colors } from '@/constants/theme';
 
 const NAV_ICONS = {
   home: (active: boolean) => (
@@ -41,15 +41,28 @@ export function BottomNav({ active }: { active: 'home' | 'history' | 'progress' 
   const [first, second] = items;
   const rest = items.slice(2);
   return (
-    <View style={styles.navBar}>
+    <View className="flex-row items-end justify-around pt-[10px] px-[8px] pb-[24px] bg-white border-t border-t-[rgba(31,43,34,0.08)]">
       {[first, second].map((item) => (
-        <Pressable key={item.key} style={styles.navItem} onPress={() => router.push(item.href)}>
+        <Pressable key={item.key} className="w-[58px] items-center gap-[3px]" onPress={() => router.push(item.href)}>
           {NAV_ICONS[item.key](active === item.key)}
-          <Text style={[styles.navLabel, active === item.key && { color: colors.green, fontFamily: fonts.bodySemiBold }]}>{item.label}</Text>
+          <Text
+            className={`text-[10px] ${active === item.key ? 'text-green font-body-semibold' : 'font-body-medium text-text-fainter'}`}
+          >
+            {item.label}
+          </Text>
         </Pressable>
       ))}
-      <Pressable style={styles.navCameraWrap} onPress={() => router.push('/scan/camera')}>
-        <View style={styles.navCamera}>
+      <Pressable className="w-[58px] items-center" onPress={() => router.push('/scan/camera')}>
+        <View
+          className="w-[56px] h-[56px] rounded-[28px] bg-green mt-[-30px] items-center justify-center"
+          style={{
+            shadowColor: colors.green,
+            shadowOpacity: 0.38,
+            shadowRadius: 18,
+            shadowOffset: { width: 0, height: 8 },
+            elevation: 6,
+          }}
+        >
           <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2}>
             <Rect x={3} y={7} width={18} height={13} rx={3} />
             <Circle cx={12} cy={13} r={4} />
@@ -58,53 +71,15 @@ export function BottomNav({ active }: { active: 'home' | 'history' | 'progress' 
         </View>
       </Pressable>
       {rest.map((item) => (
-        <Pressable key={item.key} style={styles.navItem} onPress={() => router.push(item.href)}>
+        <Pressable key={item.key} className="w-[58px] items-center gap-[3px]" onPress={() => router.push(item.href)}>
           {NAV_ICONS[item.key](active === item.key)}
-          <Text style={[styles.navLabel, active === item.key && { color: colors.green, fontFamily: fonts.bodySemiBold }]}>{item.label}</Text>
+          <Text
+            className={`text-[10px] ${active === item.key ? 'text-green font-body-semibold' : 'font-body-medium text-text-fainter'}`}
+          >
+            {item.label}
+          </Text>
         </Pressable>
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  navBar: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-around',
-    paddingTop: 10,
-    paddingHorizontal: 8,
-    paddingBottom: 24,
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(31,43,34,0.08)',
-  },
-  navItem: {
-    width: 58,
-    alignItems: 'center',
-    gap: 3,
-  },
-  navLabel: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 10,
-    color: colors.textFainter,
-  },
-  navCameraWrap: {
-    width: 58,
-    alignItems: 'center',
-  },
-  navCamera: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.green,
-    marginTop: -30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.green,
-    shadowOpacity: 0.38,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
-  },
-});

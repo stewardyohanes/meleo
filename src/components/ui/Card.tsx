@@ -1,15 +1,9 @@
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { colors } from '@/constants/theme';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
 
 export function Card({ children, style }: { children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
-  return <View style={[styles.card, style]}>{children}</View>;
+  return (
+    <View className="bg-white border border-border rounded-[20px]" style={style}>
+      {children}
+    </View>
+  );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 20,
-  },
-});

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { colors } from '@/constants/theme';
 
 export function StatusPill({ label, tone = 'green' }: { label: string; tone?: 'green' | 'amber' | 'terracotta' }) {
@@ -9,21 +9,10 @@ export function StatusPill({ label, tone = 'green' }: { label: string; tone?: 'g
   } as const;
   const c = map[tone];
   return (
-    <View style={[styles.pill, { backgroundColor: c.bg }]}>
-      <Text style={[styles.pillText, { color: c.fg }]}>{label}</Text>
+    <View className="rounded-[13px] px-[12px] py-[4px] self-start" style={{ backgroundColor: c.bg }}>
+      <Text className="font-body-semibold text-[12.5px]" style={{ color: c.fg }}>
+        {label}
+      </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  pill: {
-    borderRadius: 13,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    alignSelf: 'flex-start',
-  },
-  pillText: {
-    fontFamily: 'AlbertSans_600SemiBold',
-    fontSize: 12.5,
-  },
-});

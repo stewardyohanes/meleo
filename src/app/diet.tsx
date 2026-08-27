@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { colors, fonts } from '@/constants/theme';
+import { colors } from '@/constants/theme';
 import { OnboardingHeader, PrimaryButton, TextButton } from '@/components/ui';
 import { useUserPreferencesStore } from '@/stores/user-preferences-store';
 
@@ -13,20 +13,28 @@ export default function DietaryPreference() {
   const setSelected = useUserPreferencesStore((s) => s.setDiet);
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+    <SafeAreaView className="flex-1 bg-bg px-[24px]" edges={['top', 'bottom']}>
       <OnboardingHeader step={2} total={3} onBack={() => router.back()} />
-      <Text style={styles.title}>How do you usually eat?</Text>
-      <Text style={styles.subtitle}>You can change this anytime.</Text>
+      <Text className="font-headline text-[27px] leading-[31px] text-text tracking-[-0.3px] mb-[8px]">
+        How do you usually eat?
+      </Text>
+      <Text className="font-body text-[14px] text-text-muted mb-[20px]">You can change this anytime.</Text>
 
-      <View style={styles.list}>
+      <View className="gap-[10px]">
         {DIETS.map((diet) => {
           const active = diet === selected;
           return (
-            <Pressable key={diet} onPress={() => setSelected(diet)} style={[styles.option, active && styles.optionActive]}>
-              <Text style={[styles.optionLabel, active && { fontFamily: fonts.bodySemiBold }]}>{diet}</Text>
+            <Pressable
+              key={diet}
+              onPress={() => setSelected(diet)}
+              className={`rounded-[18px] p-[16px] flex-row items-center justify-between ${
+                active ? 'border-2 border-green bg-green-bg' : 'border-[1.5px] border-border-strong bg-white'
+              }`}
+            >
+              <Text className={`text-[15px] text-text ${active ? 'font-body-semibold' : 'font-body-medium'}`}>{diet}</Text>
               {active && (
-                <View style={styles.check}>
-                  <Text style={styles.checkMark}>✓</Text>
+                <View className="w-[22px] h-[22px] rounded-[11px] bg-green items-center justify-center">
+                  <Text className="text-white text-[12px] font-body-semibold">✓</Text>
                 </View>
               )}
             </Pressable>
@@ -34,58 +42,10 @@ export default function DietaryPreference() {
         })}
       </View>
 
-      <View style={{ marginTop: 'auto', gap: 14 }}>
+      <View className="mt-auto gap-[14px]">
         <PrimaryButton label="Continue" onPress={() => router.push('/how-it-works')} />
         <TextButton label="Skip" color={colors.textFaint} onPress={() => router.push('/how-it-works')} />
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 24 },
-  title: {
-    fontFamily: fonts.headline,
-    fontSize: 27,
-    lineHeight: 31,
-    color: colors.text,
-    letterSpacing: -0.3,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: colors.textMuted,
-    marginBottom: 20,
-  },
-  list: { gap: 10 },
-  option: {
-    borderWidth: 1.5,
-    borderColor: colors.borderStrong,
-    backgroundColor: colors.white,
-    borderRadius: 18,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  optionActive: {
-    borderWidth: 2,
-    borderColor: colors.green,
-    backgroundColor: colors.greenBg,
-  },
-  optionLabel: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 15,
-    color: colors.text,
-  },
-  check: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: colors.green,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkMark: { color: colors.white, fontSize: 12, fontFamily: fonts.bodySemiBold },
-});

@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Svg, { Circle, Rect } from 'react-native-svg';
-import { colors, fonts } from '@/constants/theme';
 import { OnboardingHeader, PrimaryButton } from '@/components/ui';
 
 const STEPS = [
@@ -14,26 +13,31 @@ const STEPS = [
 export default function HowItWorks() {
   const router = useRouter();
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+    <SafeAreaView className="flex-1 bg-bg px-[24px]" edges={['top', 'bottom']}>
       <OnboardingHeader step={3} total={3} onBack={() => router.back()} />
-      <Text style={styles.title}>Three steps to a balanced day</Text>
+      <Text className="font-headline text-[27px] leading-[31px] text-text tracking-[-0.3px] mb-[30px]">
+        Three steps to a balanced day
+      </Text>
 
-      <View style={styles.list}>
+      <View className="gap-[14px]">
         {STEPS.map((s) => (
-          <View key={s.n} style={styles.step}>
-            <View style={styles.stepIcon}>
+          <View
+            key={s.n}
+            className="bg-white border border-border rounded-[20px] p-[20px] flex-row gap-[16px] items-start"
+          >
+            <View className="w-[46px] h-[46px] rounded-[16px] bg-green-bg items-center justify-center">
               <Text style={{ fontSize: 21 }}>{s.emoji}</Text>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.stepNum}>{s.n}</Text>
-              <Text style={styles.stepTitle}>{s.title}</Text>
-              <Text style={styles.stepDesc}>{s.desc}</Text>
+            <View className="flex-1">
+              <Text className="font-body-semibold text-[10.5px] tracking-[1.3px] text-text-faint mb-[3px]">{s.n}</Text>
+              <Text className="font-body-semibold text-[16px] text-text mb-[3px]">{s.title}</Text>
+              <Text className="font-body text-[13px] leading-[19px] text-text-muted">{s.desc}</Text>
             </View>
           </View>
         ))}
       </View>
 
-      <View style={{ marginTop: 'auto', gap: 12 }}>
+      <View className="mt-auto gap-[12px]">
         <PrimaryButton
           label="Scan My First Meal"
           onPress={() => router.push('/scan/camera')}
@@ -45,64 +49,10 @@ export default function HowItWorks() {
             </Svg>
           }
         />
-        <Text style={styles.footnote}>We&apos;ll ask for camera access when you&apos;re ready.</Text>
+        <Text className="text-center font-body text-[11.5px] text-text-faint">
+          We&apos;ll ask for camera access when you&apos;re ready.
+        </Text>
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 24 },
-  title: {
-    fontFamily: fonts.headline,
-    fontSize: 27,
-    lineHeight: 31,
-    color: colors.text,
-    letterSpacing: -0.3,
-    marginBottom: 30,
-  },
-  list: { gap: 14 },
-  step: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 20,
-    padding: 20,
-    flexDirection: 'row',
-    gap: 16,
-    alignItems: 'flex-start',
-  },
-  stepIcon: {
-    width: 46,
-    height: 46,
-    borderRadius: 16,
-    backgroundColor: colors.greenBg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepNum: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 10.5,
-    letterSpacing: 1.3,
-    color: colors.textFaint,
-    marginBottom: 3,
-  },
-  stepTitle: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 16,
-    color: colors.text,
-    marginBottom: 3,
-  },
-  stepDesc: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 19,
-    color: colors.textMuted,
-  },
-  footnote: {
-    textAlign: 'center',
-    fontFamily: fonts.body,
-    fontSize: 11.5,
-    color: colors.textFaint,
-  },
-});

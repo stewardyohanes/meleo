@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
-import { colors, fonts } from '@/constants/theme';
+import { Pressable, Text, type StyleProp, type ViewStyle } from 'react-native';
+import { colors } from '@/constants/theme';
 
 export function TextButton({
   label,
@@ -14,15 +14,9 @@ export function TextButton({
 }) {
   return (
     <Pressable onPress={onPress} style={style}>
-      <Text style={[styles.textButton, { color }]}>{label}</Text>
+      <Text className="text-center font-body-semibold text-[14px]" style={{ color }}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  textButton: {
-    textAlign: 'center',
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 14,
-  },
-});

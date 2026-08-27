@@ -36,16 +36,8 @@ export function BalanceRing({
         />
       </Svg>
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <View style={styles.ringCenter}>{children}</View>
+        <View className="flex-1 items-center justify-center">{children}</View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  ringCenter: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

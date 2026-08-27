@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { colors, fonts } from '@/constants/theme';
 import { PrimaryButton } from '@/components/ui';
 
 const FEATURES = [
@@ -17,121 +16,93 @@ export default function Paywall() {
   const [plan, setPlan] = useState<'annual' | 'monthly'>('annual');
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <View style={styles.closeRow}>
+    <SafeAreaView className="flex-1 bg-bg px-[24px] pt-[6px]" edges={['top', 'bottom']}>
+      <View className="items-end mb-[6px]">
         <Pressable onPress={() => router.back()} hitSlop={12}>
-          <Text style={styles.close}>✕</Text>
+          <Text className="text-[17px] text-text-faint">✕</Text>
         </Pressable>
       </View>
 
-      <Text style={styles.title}>Understand your eating patterns</Text>
-      <Text style={styles.subtitle}>Go beyond individual meals and see what your habits are telling you.</Text>
+      <Text className="font-headline text-[28px] leading-[32px] text-text tracking-[-0.3px] mb-[6px]">
+        Understand your eating patterns
+      </Text>
+      <Text className="font-body text-[14px] leading-[21px] text-text-muted mb-[18px]">
+        Go beyond individual meals and see what your habits are telling you.
+      </Text>
 
-      <View style={{ gap: 11, marginBottom: 18 }}>
+      <View className="gap-[11px] mb-[18px]">
         {FEATURES.map((f) => (
-          <View key={f.title} style={styles.featureRow}>
-            <View style={styles.checkDot}>
-              <Text style={styles.checkMark}>✓</Text>
+          <View key={f.title} className="flex-row gap-[11px] items-start">
+            <View className="w-[21px] h-[21px] rounded-[11px] bg-green-bg items-center justify-center mt-[1px]">
+              <Text className="text-green text-[11px]">✓</Text>
             </View>
-            <Text style={styles.featureText}>
-              <Text style={{ fontFamily: fonts.bodySemiBold }}>{f.title}</Text>
-              <Text style={{ color: colors.textFaint }}> — {f.desc}</Text>
+            <Text className="flex-1 font-body text-[13.5px] text-text leading-[19px]">
+              <Text className="font-body-semibold">{f.title}</Text>
+              <Text className="text-text-faint"> — {f.desc}</Text>
             </Text>
           </View>
         ))}
       </View>
 
-      <View style={{ gap: 10, marginBottom: 16 }}>
-        <Pressable style={[styles.planCard, plan === 'annual' && styles.planCardActive]} onPress={() => setPlan('annual')}>
-          <View style={styles.bestValue}>
-            <Text style={styles.bestValueText}>BEST VALUE</Text>
+      <View className="gap-[10px] mb-[16px]">
+        <Pressable
+          className={`rounded-[20px] p-[15px] px-[16px] flex-row items-center gap-[13px] relative bg-white ${
+            plan === 'annual' ? 'border-2 border-green' : 'border-[1.5px] border-border-strong'
+          }`}
+          onPress={() => setPlan('annual')}
+        >
+          <View className="absolute top-[-9px] right-[16px] bg-green rounded-[9px] py-[3px] px-[9px]">
+            <Text className="font-body-bold text-[10px] tracking-[0.4px] text-white">BEST VALUE</Text>
           </View>
-          <View style={[styles.radio, plan === 'annual' && styles.radioActive]}>{plan === 'annual' && <View style={styles.radioDot} />}</View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.planName}>Annual</Text>
-            <Text style={styles.planPrice}>$39.99/year</Text>
+          <View
+            className={`w-[21px] h-[21px] rounded-[11px] border-2 ${
+              plan === 'annual' ? 'border-green bg-green items-center justify-center' : 'border-[#D9DFD5]'
+            }`}
+          >
+            {plan === 'annual' && <View className="w-[7px] h-[7px] rounded-[3.5px] bg-white" />}
           </View>
-          <Text style={styles.planPerMo}>
-            $3.33<Text style={styles.planPerMoUnit}>/mo</Text>
+          <View className="flex-1">
+            <Text className="font-body-semibold text-[15px] text-text">Annual</Text>
+            <Text className="font-body text-[12px] text-text-faint">$39.99/year</Text>
+          </View>
+          <Text className="font-headline text-[14px] text-green-dark">
+            $3.33<Text className="font-body text-[11px] text-text-faint">/mo</Text>
           </Text>
         </Pressable>
 
-        <Pressable style={[styles.planCard, plan === 'monthly' && styles.planCardActive]} onPress={() => setPlan('monthly')}>
-          <View style={[styles.radio, plan === 'monthly' && styles.radioActive]}>{plan === 'monthly' && <View style={styles.radioDot} />}</View>
-          <Text style={[styles.planName, { flex: 1 }]}>Monthly</Text>
-          <Text style={styles.planPerMo}>
-            $7.99<Text style={styles.planPerMoUnit}>/mo</Text>
+        <Pressable
+          className={`rounded-[20px] p-[15px] px-[16px] flex-row items-center gap-[13px] relative bg-white ${
+            plan === 'monthly' ? 'border-2 border-green' : 'border-[1.5px] border-border-strong'
+          }`}
+          onPress={() => setPlan('monthly')}
+        >
+          <View
+            className={`w-[21px] h-[21px] rounded-[11px] border-2 ${
+              plan === 'monthly' ? 'border-green bg-green items-center justify-center' : 'border-[#D9DFD5]'
+            }`}
+          >
+            {plan === 'monthly' && <View className="w-[7px] h-[7px] rounded-[3.5px] bg-white" />}
+          </View>
+          <Text className="flex-1 font-body-semibold text-[15px] text-text">Monthly</Text>
+          <Text className="font-headline text-[14px] text-green-dark">
+            $7.99<Text className="font-body text-[11px] text-text-faint">/mo</Text>
           </Text>
         </Pressable>
       </View>
 
-      <View style={{ marginTop: 'auto', gap: 10 }}>
+      <View className="mt-auto gap-[10px]">
         <PrimaryButton label="Start 7-Day Free Trial" onPress={() => router.back()} />
-        <Text style={styles.cancelNote}>Cancel anytime.</Text>
-        <View style={styles.linkRow}>
-          <Text style={styles.link}>Maybe Later</Text>
-          <Text style={styles.link}>Restore Purchases</Text>
+        <Text className="text-center font-body text-[12px] text-text-faint">Cancel anytime.</Text>
+        <View className="flex-row justify-center gap-[22px]">
+          <Text className="font-body-semibold text-[12.5px] text-text-faint">Maybe Later</Text>
+          <Text className="font-body-semibold text-[12.5px] text-text-faint">Restore Purchases</Text>
         </View>
-        <View style={styles.linkRow}>
-          <Text style={styles.legalLink}>Terms</Text>
-          <Text style={styles.legalLink}>·</Text>
-          <Text style={styles.legalLink}>Privacy</Text>
+        <View className="flex-row justify-center gap-[22px]">
+          <Text className="font-body text-[10.5px] text-border-strong">Terms</Text>
+          <Text className="font-body text-[10.5px] text-border-strong">·</Text>
+          <Text className="font-body text-[10.5px] text-border-strong">Privacy</Text>
         </View>
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 24, paddingTop: 6 },
-  closeRow: { alignItems: 'flex-end', marginBottom: 6 },
-  close: { fontSize: 17, color: colors.textFaint },
-  title: { fontFamily: fonts.headline, fontSize: 28, lineHeight: 32, color: colors.text, letterSpacing: -0.3, marginBottom: 6 },
-  subtitle: { fontFamily: fonts.body, fontSize: 14, lineHeight: 21, color: colors.textMuted, marginBottom: 18 },
-  featureRow: { flexDirection: 'row', gap: 11, alignItems: 'flex-start' },
-  checkDot: {
-    width: 21,
-    height: 21,
-    borderRadius: 11,
-    backgroundColor: colors.greenBg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 1,
-  },
-  checkMark: { color: colors.green, fontSize: 11 },
-  featureText: { flex: 1, fontFamily: fonts.body, fontSize: 13.5, color: colors.text, lineHeight: 19 },
-  planCard: {
-    borderWidth: 1.5,
-    borderColor: colors.borderStrong,
-    backgroundColor: colors.white,
-    borderRadius: 20,
-    padding: 15,
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 13,
-    position: 'relative',
-  },
-  planCardActive: { borderWidth: 2, borderColor: colors.green },
-  bestValue: {
-    position: 'absolute',
-    top: -9,
-    right: 16,
-    backgroundColor: colors.green,
-    borderRadius: 9,
-    paddingVertical: 3,
-    paddingHorizontal: 9,
-  },
-  bestValueText: { fontFamily: fonts.bodyBold, fontSize: 10, letterSpacing: 0.4, color: '#fff' },
-  radio: { width: 21, height: 21, borderRadius: 11, borderWidth: 2, borderColor: '#D9DFD5' },
-  radioActive: { borderColor: colors.green, backgroundColor: colors.green, alignItems: 'center', justifyContent: 'center' },
-  radioDot: { width: 7, height: 7, borderRadius: 3.5, backgroundColor: '#fff' },
-  planName: { fontFamily: fonts.bodySemiBold, fontSize: 15, color: colors.text },
-  planPrice: { fontFamily: fonts.body, fontSize: 12, color: colors.textFaint },
-  planPerMo: { fontFamily: fonts.headline, fontSize: 14, color: colors.greenDark },
-  planPerMoUnit: { fontFamily: fonts.body, fontSize: 11, color: colors.textFaint },
-  cancelNote: { textAlign: 'center', fontFamily: fonts.body, fontSize: 12, color: colors.textFaint },
-  linkRow: { flexDirection: 'row', justifyContent: 'center', gap: 22 },
-  link: { fontFamily: fonts.bodySemiBold, fontSize: 12.5, color: colors.textFaint },
-  legalLink: { fontFamily: fonts.body, fontSize: 10.5, color: colors.borderStrong },
-});

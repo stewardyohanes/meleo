@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { colors, fonts } from '@/constants/theme';
+import { colors } from '@/constants/theme';
 import { ImagePlaceholder, PrimaryButton, TextButton } from '@/components/ui';
 
 type Portion = 'Small' | 'Medium' | 'Large';
@@ -13,6 +13,12 @@ const PORTIONS: { key: Portion; grams: string }[] = [
   { key: 'Medium', grams: '~150g' },
   { key: 'Large', grams: '~220g' },
 ];
+
+const PORTION_SIZE_CLASS: Record<Portion, string> = {
+  Small: 'w-[26px] h-[26px]',
+  Medium: 'w-[36px] h-[36px]',
+  Large: 'w-[46px] h-[46px]',
+};
 
 const INITIAL_FOODS: Food[] = [
   { id: 'rice', emoji: '🍚', name: 'White Rice', portion: 'Medium' },
@@ -28,41 +34,57 @@ export default function Confirm() {
   const editing = foods.find((f) => f.id === editingId) ?? null;
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <View style={styles.header}>
+    <SafeAreaView className="flex-1 bg-bg px-[24px]" edges={['top', 'bottom']}>
+      <View className="flex-row gap-[16px] items-center mb-[22px]">
         <ImagePlaceholder emoji="🍽️" radius={18} style={{ width: 72, height: 72 }} />
-        <View style={{ flex: 1 }}>
-          <Text style={styles.title}>Here&apos;s what we found</Text>
-          <Text style={styles.subtitle}>Give it a quick check before we calculate your balance.</Text>
+        <View className="flex-1">
+          <Text className="font-headline text-[23px] text-text mb-[4px]">Here&apos;s what we found</Text>
+          <Text className="font-body text-[13px] leading-[19px] text-text-muted">
+            Give it a quick check before we calculate your balance.
+          </Text>
         </View>
       </View>
 
-      <View style={{ gap: 10 }}>
+      <View className="gap-[10px]">
         {foods.map((f) => (
-          <Pressable key={f.id} style={styles.foodRow} onPress={() => setEditingId(f.id)}>
-            <View style={styles.foodIcon}>
+          <Pressable
+            key={f.id}
+            className="bg-white border border-border rounded-[18px] p-[15px] flex-row items-center gap-[13px]"
+            onPress={() => setEditingId(f.id)}
+          >
+            <View className="w-[44px] h-[44px] rounded-[14px] bg-cream items-center justify-center">
               <Text style={{ fontSize: 22 }}>{f.emoji}</Text>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.foodName}>{f.name}</Text>
-              <Text style={styles.foodMeta}>{f.portion} · {PORTIONS.find((p) => p.key === f.portion)?.grams}</Text>
+            <View className="flex-1">
+              <Text className="font-body-semibold text-[15px] text-text">{f.name}</Text>
+              <Text className="font-body text-[12.5px] text-text-muted mt-[2px]">
+                {f.portion} · {PORTIONS.find((p) => p.key === f.portion)?.grams}
+              </Text>
             </View>
-            <Text style={styles.chevron}>›</Text>
+            <Text className="text-border-strong text-[18px]">›</Text>
           </Pressable>
         ))}
 
-        <View style={styles.sauceCard}>
-          <View style={styles.foodIcon}>
+        <View className="bg-amber-bg border border-amber-border rounded-[18px] p-[14px] flex-row items-center gap-[13px]">
+          <View className="w-[44px] h-[44px] rounded-[14px] bg-cream items-center justify-center">
             <Text style={{ fontSize: 22 }}>🥣</Text>
           </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.sauceQuestion}>Is this sauce sweetened?</Text>
-            <View style={{ flexDirection: 'row', gap: 7, flexWrap: 'wrap' }}>
+          <View className="flex-1">
+            <Text className="font-body-semibold text-[14px] text-text mb-[7px]">Is this sauce sweetened?</Text>
+            <View className="flex-row gap-[7px] flex-wrap">
               {(['Savory', 'Sweet', 'Not sure'] as const).map((opt) => {
                 const active = opt === sauce;
                 return (
-                  <Pressable key={opt} onPress={() => setSauce(opt)} style={[styles.saucePill, active && styles.saucePillActive]}>
-                    <Text style={[styles.saucePillText, active && styles.saucePillTextActive]}>{opt}</Text>
+                  <Pressable
+                    key={opt}
+                    onPress={() => setSauce(opt)}
+                    className={`py-[6px] px-[12px] rounded-[14px] border-[1.5px] ${
+                      active ? 'bg-green border-green' : 'border-[#E0D6BE]'
+                    }`}
+                  >
+                    <Text className={`text-[12px] ${active ? 'text-white font-body-semibold' : 'font-body-medium text-text-muted'}`}>
+                      {opt}
+                    </Text>
                   </Pressable>
                 );
               })}
@@ -71,44 +93,40 @@ export default function Confirm() {
         </View>
       </View>
 
-      <View style={{ marginTop: 'auto', gap: 12 }}>
+      <View className="mt-auto gap-[12px]">
         <PrimaryButton label="Looks Good" onPress={() => router.push('/scan/result')} />
         <TextButton label="+ Add Food" onPress={() => {}} />
       </View>
 
       <Modal visible={!!editing} transparent animationType="slide" onRequestClose={() => setEditingId(null)}>
-        <Pressable style={styles.sheetBackdrop} onPress={() => setEditingId(null)} />
+        <Pressable className="flex-1 bg-[rgba(31,43,34,0.28)]" onPress={() => setEditingId(null)} />
         {editing && (
-          <SafeAreaView edges={['bottom']} style={styles.sheet}>
-            <View style={styles.sheetHandle} />
-            <View style={styles.sheetTitleRow}>
+          <SafeAreaView edges={['bottom']} className="bg-bg rounded-t-[30px] px-[24px] pt-[12px] pb-[8px]">
+            <View className="w-[40px] h-[5px] rounded-[3px] bg-[#D9DFD5] self-center mb-[20px]" />
+            <View className="flex-row items-center gap-[12px] mb-[6px]">
               <Text style={{ fontSize: 26 }}>{editing.emoji}</Text>
-              <Text style={styles.sheetTitle}>{editing.name}</Text>
+              <Text className="font-headline text-[22px] text-text">{editing.name}</Text>
             </View>
-            <Text style={styles.sheetSubtitle}>How much did you eat?</Text>
+            <Text className="font-body text-[14px] text-text-muted mb-[18px]">How much did you eat?</Text>
 
-            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+            <View className="flex-row gap-[10px] mb-[16px]">
               {PORTIONS.map((p) => {
                 const active = p.key === editing.portion;
                 return (
                   <Pressable
                     key={p.key}
-                    style={[styles.portionOption, active && styles.portionOptionActive]}
+                    className={`flex-1 rounded-[18px] py-[16px] px-[8px] items-center gap-[9px] ${
+                      active ? 'border-2 border-green bg-green-bg' : 'border-[1.5px] border-border-strong bg-white'
+                    }`}
                     onPress={() =>
                       setFoods((prev) => prev.map((f) => (f.id === editing.id ? { ...f, portion: p.key } : f)))
                     }
                   >
                     <View
-                      style={[
-                        styles.portionDot,
-                        p.key === 'Small' && { width: 26, height: 26 },
-                        p.key === 'Medium' && { width: 36, height: 36 },
-                        p.key === 'Large' && { width: 46, height: 46 },
-                        active && { backgroundColor: '#CBDECB' },
-                      ]}
+                      className={`rounded-full ${PORTION_SIZE_CLASS[p.key]} ${active ? 'bg-[#CBDECB]' : 'bg-[#EDEAE0]'}`}
                     />
-                    <Text style={[styles.portionLabel, active && { color: colors.greenDark }]}>{p.key}</Text>
-                    <Text style={styles.portionGrams}>{p.grams}</Text>
+                    <Text className={`font-body-semibold text-[13.5px] ${active ? 'text-green-dark' : 'text-text'}`}>{p.key}</Text>
+                    <Text className="font-body text-[11.5px] text-text-faint">{p.grams}</Text>
                   </Pressable>
                 );
               })}
@@ -116,7 +134,7 @@ export default function Confirm() {
 
             <TextButton label="Enter amount manually" onPress={() => {}} style={{ marginBottom: 18, alignSelf: 'center' }} />
             <PrimaryButton label="Update" onPress={() => setEditingId(null)} style={{ marginBottom: 12 }} />
-            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 26 }}>
+            <View className="flex-row justify-center gap-[26px]">
               <TextButton label="Change Food" color={colors.textFaint} onPress={() => setEditingId(null)} />
               <TextButton
                 label="Remove"
@@ -133,80 +151,3 @@ export default function Confirm() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 24 },
-  header: { flexDirection: 'row', gap: 16, alignItems: 'center', marginBottom: 22 },
-  title: { fontFamily: fonts.headline, fontSize: 23, color: colors.text, marginBottom: 4 },
-  subtitle: { fontFamily: fonts.body, fontSize: 13, lineHeight: 19, color: colors.textMuted },
-  foodRow: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 18,
-    padding: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 13,
-  },
-  foodIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: colors.cream,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  foodName: { fontFamily: fonts.bodySemiBold, fontSize: 15, color: colors.text },
-  foodMeta: { fontFamily: fonts.body, fontSize: 12.5, color: colors.textMuted, marginTop: 2 },
-  chevron: { color: colors.borderStrong, fontSize: 18 },
-  sauceCard: {
-    backgroundColor: colors.amberBg,
-    borderWidth: 1,
-    borderColor: colors.amberBorder,
-    borderRadius: 18,
-    padding: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 13,
-  },
-  sauceQuestion: { fontFamily: fonts.bodySemiBold, fontSize: 14, color: colors.text, marginBottom: 7 },
-  saucePill: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: '#E0D6BE',
-  },
-  saucePillActive: { backgroundColor: colors.green, borderColor: colors.green },
-  saucePillText: { fontFamily: fonts.bodyMedium, fontSize: 12, color: colors.textMuted },
-  saucePillTextActive: { color: '#fff', fontFamily: fonts.bodySemiBold },
-  sheetBackdrop: { flex: 1, backgroundColor: 'rgba(31,43,34,0.28)' },
-  sheet: {
-    backgroundColor: colors.bg,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 24,
-    paddingTop: 12,
-    paddingBottom: 8,
-  },
-  sheetHandle: { width: 40, height: 5, borderRadius: 3, backgroundColor: '#D9DFD5', alignSelf: 'center', marginBottom: 20 },
-  sheetTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 6 },
-  sheetTitle: { fontFamily: fonts.headline, fontSize: 22, color: colors.text },
-  sheetSubtitle: { fontFamily: fonts.body, fontSize: 14, color: colors.textMuted, marginBottom: 18 },
-  portionOption: {
-    flex: 1,
-    borderWidth: 1.5,
-    borderColor: colors.borderStrong,
-    backgroundColor: colors.white,
-    borderRadius: 18,
-    paddingVertical: 16,
-    paddingHorizontal: 8,
-    alignItems: 'center',
-    gap: 9,
-  },
-  portionOptionActive: { borderWidth: 2, borderColor: colors.green, backgroundColor: colors.greenBg },
-  portionDot: { borderRadius: 999, backgroundColor: '#EDEAE0' },
-  portionLabel: { fontFamily: fonts.bodySemiBold, fontSize: 13.5, color: colors.text },
-  portionGrams: { fontFamily: fonts.body, fontSize: 11.5, color: colors.textFaint },
-});

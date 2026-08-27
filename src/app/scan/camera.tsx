@@ -1,5 +1,4 @@
 import { PrimaryButton } from "@/components/ui";
-import { colors, fonts } from "@/constants/theme";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
@@ -16,7 +15,7 @@ export default function Camera() {
   }, [permission, requestPermission]);
 
   return (
-    <View style={styles.screen}>
+    <View className="flex-1 bg-black">
       {permission?.granted ? (
         <CameraView
           style={StyleSheet.absoluteFill}
@@ -24,33 +23,36 @@ export default function Camera() {
           mode="picture"
         />
       ) : (
-        <View style={[StyleSheet.absoluteFill, styles.permissionFallback]} />
+        <View className="bg-black" style={StyleSheet.absoluteFill} />
       )}
 
-      <View style={styles.topOverlay} pointerEvents="box-none">
+      <View className="absolute top-[66px] left-[20px] right-[20px] flex-row justify-between" pointerEvents="box-none">
         <Pressable
-          style={styles.roundBtn}
+          className="w-[42px] h-[42px] rounded-[21px] bg-[rgba(20,24,20,0.5)] items-center justify-center"
           onPress={() => router.replace("/home")}
         >
-          <Text style={styles.roundBtnText}>✕</Text>
+          <Text className="text-white text-[16px]">✕</Text>
         </Pressable>
-        <Pressable style={styles.roundBtn}>
-          <Text style={styles.roundBtnText}>⚡</Text>
+        <Pressable className="w-[42px] h-[42px] rounded-[21px] bg-[rgba(20,24,20,0.5)] items-center justify-center">
+          <Text className="text-white text-[16px]">⚡</Text>
         </Pressable>
       </View>
 
-      <View style={styles.frame} pointerEvents="none" />
+      <View
+        className="absolute top-[170px] left-[36px] right-[36px] bottom-[250px] border-[1.5px] border-[rgba(255,255,255,0.55)] rounded-[28px]"
+        pointerEvents="none"
+      />
 
-      <View style={styles.hintWrap} pointerEvents="none">
-        <View style={styles.hint}>
-          <Text style={styles.hintText}>Keep your meal inside the frame</Text>
+      <View className="absolute left-0 right-0 bottom-[210px] items-center" pointerEvents="none">
+        <View className="bg-[rgba(20,24,20,0.55)] rounded-[20px] py-[9px] px-[16px]">
+          <Text className="text-[rgba(255,255,255,0.92)] font-body-medium text-[12.5px]">Keep your meal inside the frame</Text>
         </View>
       </View>
 
       {!permission?.granted && (
-        <View style={styles.permissionPrompt}>
-          <Text style={styles.permissionTitle}>Camera access needed</Text>
-          <Text style={styles.permissionBody}>
+        <View className="absolute left-[28px] right-[28px] top-[38%] bg-[rgba(250,248,243,0.97)] rounded-[26px] p-[24px]">
+          <Text className="font-headline text-[18px] text-text mb-[6px]">Camera access needed</Text>
+          <Text className="font-body text-[13px] text-text-muted">
             Meleo needs your camera to scan meals.
           </Text>
           <PrimaryButton
@@ -61,123 +63,18 @@ export default function Camera() {
         </View>
       )}
 
-      <View style={styles.bottomBar} pointerEvents="box-none">
-        <View style={styles.smallBtn}>
-          <Text style={styles.roundBtnText}>🖼️</Text>
+      <View className="absolute left-0 right-0 bottom-[52px] flex-row items-center justify-between px-[44px]" pointerEvents="box-none">
+        <View className="w-[46px] h-[46px] rounded-[14px] border-[1.5px] border-[rgba(255,255,255,0.5)] bg-[rgba(20,24,20,0.4)] items-center justify-center">
+          <Text className="text-white text-[16px]">🖼️</Text>
         </View>
         <Pressable
-          style={styles.shutterOuter}
+          className="w-[76px] h-[76px] rounded-[38px] border-[4px] border-white items-center justify-center"
           onPress={() => permission?.granted && router.push("/scan/processing")}
         >
-          <View style={styles.shutterInner} />
+          <View className="w-[60px] h-[60px] rounded-[30px] bg-white" />
         </Pressable>
         <View style={{ width: 46, height: 46 }} />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.black },
-  permissionFallback: { backgroundColor: colors.black },
-  topOverlay: {
-    position: "absolute",
-    top: 66,
-    left: 20,
-    right: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  roundBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: "rgba(20,24,20,0.5)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  roundBtnText: { color: "#fff", fontSize: 16 },
-  frame: {
-    position: "absolute",
-    top: 170,
-    left: 36,
-    right: 36,
-    bottom: 250,
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.55)",
-    borderRadius: 28,
-  },
-  hintWrap: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 210,
-    alignItems: "center",
-  },
-  hint: {
-    backgroundColor: "rgba(20,24,20,0.55)",
-    borderRadius: 20,
-    paddingVertical: 9,
-    paddingHorizontal: 16,
-  },
-  hintText: {
-    color: "rgba(255,255,255,0.92)",
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12.5,
-  },
-  bottomBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 52,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 44,
-  },
-  smallBtn: {
-    width: 46,
-    height: 46,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.5)",
-    backgroundColor: "rgba(20,24,20,0.4)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  shutterOuter: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
-    borderWidth: 4,
-    borderColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  shutterInner: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#fff",
-  },
-  permissionPrompt: {
-    position: "absolute",
-    left: 28,
-    right: 28,
-    top: "38%",
-    backgroundColor: "rgba(250,248,243,0.97)",
-    borderRadius: 26,
-    padding: 24,
-  },
-  permissionTitle: {
-    fontFamily: fonts.headline,
-    fontSize: 18,
-    color: colors.text,
-    marginBottom: 6,
-  },
-  permissionBody: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-});
