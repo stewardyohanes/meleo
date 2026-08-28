@@ -2,8 +2,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { scanService } from "../services/scan.service";
 import type { ConfirmFood } from "../types";
 
+export const createScanMutationKey = ["create-scan"] as const;
+
 export function useCreateScan() {
   return useMutation({
+    mutationKey: createScanMutationKey,
     mutationFn: async (fileUri: string) => {
       const { path } = await scanService.uploadImage(fileUri);
       return scanService.create(path);

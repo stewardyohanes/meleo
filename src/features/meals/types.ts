@@ -1,3 +1,4 @@
+import { componentScoresSchema, nutritionTotalsSchema } from "@/features/scan/types";
 import { z } from "zod";
 
 export const mealListItemSchema = z.object({
@@ -17,6 +18,8 @@ export const mealDetailSchema = z.object({
   foods: z.array(mealFoodSchema),
   overallScore: z.number().optional(),
   classification: z.string().optional(),
+  components: componentScoresSchema.optional(),
+  nutrition: nutritionTotalsSchema.optional(),
 });
 
 export type MealListItem = z.infer<typeof mealListItemSchema>;
