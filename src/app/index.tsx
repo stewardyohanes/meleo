@@ -1,11 +1,38 @@
 import { ImagePlaceholder, PrimaryButton, TextButton } from "@/components/ui";
+import {
+  signInAnonymously,
+  signInWithApple,
+} from "@/features/auth/services/auth.service";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
 
 export default function Welcome() {
   const router = useRouter();
+  const [isSigningIn, setIsSigningIn] = useState(false);
+
+  async function handleGetStarted() {
+    setIsSigningIn(true);
+    try {
+      await signInAnonymously();
+      router.push("/goals");
+    } finally {
+      setIsSigningIn(false);
+    }
+  }
+
+  async function handleSignIn() {
+    setIsSigningIn(true);
+    try {
+      await signInWithApple();
+      router.push("/home");
+    } finally {
+      setIsSigningIn(false);
+    }
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-bg px-[24px]" edges={["top", "bottom"]}>
       <View className="flex-row items-center gap-[8px]">
@@ -63,11 +90,12 @@ export default function Welcome() {
       <View className="gap-[14px] pb-[12px]">
         <PrimaryButton
           label="Get Started"
-          onPress={() => router.push("/goals")}
+          onPress={handleGetStarted}
+          disabled={isSigningIn}
         />
         <TextButton
           label="Sign In"
-          onPress={() => router.push("/home")}
+          onPress={handleSignIn}
           style={{ paddingVertical: 4 }}
         />
       </View>

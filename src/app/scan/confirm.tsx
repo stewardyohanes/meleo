@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import { Modal, Pressable, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { Alert, Modal, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors } from '@/constants/theme';
 import { ImagePlaceholder, PrimaryButton, TextButton } from '@/components/ui';
+import { useConfirmScan } from '@/features/scan/hooks/use-scan';
+import { useScanFlowStore } from '@/features/scan/store/scan-flow-store';
 
 type Portion = 'Small' | 'Medium' | 'Large';
-type Food = { id: string; emoji: string; name: string; portion: Portion };
+type Food = { id: string; name: string; baseGrams: number; portion: Portion };
 
-const PORTIONS: { key: Portion; grams: string }[] = [
-  { key: 'Small', grams: '~100g' },
-  { key: 'Medium', grams: '~150g' },
-  { key: 'Large', grams: '~220g' },
+const PORTIONS: { key: Portion; factor: number }[] = [
+  { key: 'Small', factor: 0.7 },
+  { key: 'Medium', factor: 1 },
+  { key: 'Large', factor: 1.4 },
 ];
 
 const PORTION_SIZE_CLASS: Record<Portion, string> = {
@@ -20,18 +22,55 @@ const PORTION_SIZE_CLASS: Record<Portion, string> = {
   Large: 'w-[46px] h-[46px]',
 };
 
-const INITIAL_FOODS: Food[] = [
-  { id: 'rice', emoji: '🍚', name: 'White Rice', portion: 'Medium' },
-  { id: 'chicken', emoji: '🍗', name: 'Grilled Chicken', portion: 'Medium' },
-  { id: 'veg', emoji: '🥦', name: 'Broccoli & Carrots', portion: 'Small' },
-];
+function gramsForPortion(baseGrams: number, portion: Portion): number {
+  const factor = PORTIONS.find((p) => p.key === portion)?.factor ?? 1;
+  return Math.round(baseGrams * factor);
+}
 
 export default function Confirm() {
   const router = useRouter();
-  const [foods, setFoods] = useState(INITIAL_FOODS);
-  const [sauce, setSauce] = useState<'Savory' | 'Sweet' | 'Not sure'>('Savory');
+  const scanId = useScanFlowStore((s) => s.scanId);
+  const detectedItems = useScanFlowStore((s) => s.detectedItems);
+  const setMealResult = useScanFlowStore((s) => s.setMealResult);
+  const confirmScan = useConfirmScan();
+
+  const [foods, setFoods] = useState<Food[]>(() =>
+    detectedItems.map((item, i) => ({
+      id: `${i}-${item.name}`,
+      name: item.name,
+      baseGrams: item.estimatedGrams,
+      portion: 'Medium' as Portion,
+    })),
+  );
   const [editingId, setEditingId] = useState<string | null>(null);
   const editing = foods.find((f) => f.id === editingId) ?? null;
+
+  useEffect(() => {
+    if (!scanId) router.replace('/scan/camera');
+  }, [scanId, router]);
+
+  const grams = useMemo(
+    () => Object.fromEntries(foods.map((f) => [f.id, gramsForPortion(f.baseGrams, f.portion)])),
+    [foods],
+  );
+
+  async function handleConfirm() {
+    if (!scanId || foods.length === 0) return;
+    try {
+      const meal = await confirmScan.mutateAsync({
+        id: scanId,
+        foods: foods.map((f) => ({
+          name: f.name,
+          estimatedGrams: grams[f.id],
+          portionLabel: f.portion,
+        })),
+      });
+      setMealResult(meal);
+      router.push('/scan/result');
+    } catch (error) {
+      Alert.alert('Could not save meal', error instanceof Error ? error.message : 'Please try again.');
+    }
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-bg px-[24px]" edges={['top', 'bottom']}>
@@ -53,49 +92,25 @@ export default function Confirm() {
             onPress={() => setEditingId(f.id)}
           >
             <View className="w-[44px] h-[44px] rounded-[14px] bg-cream items-center justify-center">
-              <Text style={{ fontSize: 22 }}>{f.emoji}</Text>
+              <Text style={{ fontSize: 22 }}>🍽️</Text>
             </View>
             <View className="flex-1">
               <Text className="font-body-semibold text-[15px] text-text">{f.name}</Text>
               <Text className="font-body text-[12.5px] text-text-muted mt-[2px]">
-                {f.portion} · {PORTIONS.find((p) => p.key === f.portion)?.grams}
+                {f.portion} · ~{grams[f.id]}g
               </Text>
             </View>
             <Text className="text-border-strong text-[18px]">›</Text>
           </Pressable>
         ))}
-
-        <View className="bg-amber-bg border border-amber-border rounded-[18px] p-[14px] flex-row items-center gap-[13px]">
-          <View className="w-[44px] h-[44px] rounded-[14px] bg-cream items-center justify-center">
-            <Text style={{ fontSize: 22 }}>🥣</Text>
-          </View>
-          <View className="flex-1">
-            <Text className="font-body-semibold text-[14px] text-text mb-[7px]">Is this sauce sweetened?</Text>
-            <View className="flex-row gap-[7px] flex-wrap">
-              {(['Savory', 'Sweet', 'Not sure'] as const).map((opt) => {
-                const active = opt === sauce;
-                return (
-                  <Pressable
-                    key={opt}
-                    onPress={() => setSauce(opt)}
-                    className={`py-[6px] px-[12px] rounded-[14px] border-[1.5px] ${
-                      active ? 'bg-green border-green' : 'border-[#E0D6BE]'
-                    }`}
-                  >
-                    <Text className={`text-[12px] ${active ? 'text-white font-body-semibold' : 'font-body-medium text-text-muted'}`}>
-                      {opt}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-        </View>
       </View>
 
       <View className="mt-auto gap-[12px]">
-        <PrimaryButton label="Looks Good" onPress={() => router.push('/scan/result')} />
-        <TextButton label="+ Add Food" onPress={() => {}} />
+        <PrimaryButton
+          label={confirmScan.isPending ? 'Saving…' : 'Looks Good'}
+          onPress={handleConfirm}
+          disabled={confirmScan.isPending || foods.length === 0}
+        />
       </View>
 
       <Modal visible={!!editing} transparent animationType="slide" onRequestClose={() => setEditingId(null)}>
@@ -104,7 +119,7 @@ export default function Confirm() {
           <SafeAreaView edges={['bottom']} className="bg-bg rounded-t-[30px] px-[24px] pt-[12px] pb-[8px]">
             <View className="w-[40px] h-[5px] rounded-[3px] bg-[#D9DFD5] self-center mb-[20px]" />
             <View className="flex-row items-center gap-[12px] mb-[6px]">
-              <Text style={{ fontSize: 26 }}>{editing.emoji}</Text>
+              <Text style={{ fontSize: 26 }}>🍽️</Text>
               <Text className="font-headline text-[22px] text-text">{editing.name}</Text>
             </View>
             <Text className="font-body text-[14px] text-text-muted mb-[18px]">How much did you eat?</Text>
@@ -126,16 +141,15 @@ export default function Confirm() {
                       className={`rounded-full ${PORTION_SIZE_CLASS[p.key]} ${active ? 'bg-[#CBDECB]' : 'bg-[#EDEAE0]'}`}
                     />
                     <Text className={`font-body-semibold text-[13.5px] ${active ? 'text-green-dark' : 'text-text'}`}>{p.key}</Text>
-                    <Text className="font-body text-[11.5px] text-text-faint">{p.grams}</Text>
+                    <Text className="font-body text-[11.5px] text-text-faint">~{gramsForPortion(editing.baseGrams, p.key)}g</Text>
                   </Pressable>
                 );
               })}
             </View>
 
-            <TextButton label="Enter amount manually" onPress={() => {}} style={{ marginBottom: 18, alignSelf: 'center' }} />
             <PrimaryButton label="Update" onPress={() => setEditingId(null)} style={{ marginBottom: 12 }} />
             <View className="flex-row justify-center gap-[26px]">
-              <TextButton label="Change Food" color={colors.textFaint} onPress={() => setEditingId(null)} />
+              <TextButton label="Close" color={colors.textFaint} onPress={() => setEditingId(null)} />
               <TextButton
                 label="Remove"
                 color={colors.terracotta}

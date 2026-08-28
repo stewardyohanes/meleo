@@ -1,12 +1,18 @@
 import { PrimaryButton } from "@/components/ui";
+import { useCreateScan } from "@/features/scan/hooks/use-scan";
+import { useScanFlowStore } from "@/features/scan/store/scan-flow-store";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Camera() {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef<CameraView>(null);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const createScan = useCreateScan();
+  const setScan = useScanFlowStore((s) => s.setScan);
 
   useEffect(() => {
     if (permission && !permission.granted && permission.canAskAgain) {
@@ -14,10 +20,44 @@ export default function Camera() {
     }
   }, [permission, requestPermission]);
 
+  async function handleCapture() {
+    if (!permission?.granted || !cameraRef.current || isCapturing) return;
+    setIsCapturing(true);
+
+    const photo = await cameraRef.current.takePictureAsync({ quality: 0.7 });
+    if (!photo) {
+      setIsCapturing(false);
+      return;
+    }
+
+    router.push("/scan/processing");
+    createScan.mutate(
+      photo.uri,
+      {
+        onSuccess: (scan) => {
+          setIsCapturing(false);
+          if (scan.status === "failed") {
+            router.back();
+            Alert.alert("Couldn't analyze meal", scan.errorMessage || "Please try again.");
+            return;
+          }
+          setScan(scan.id, scan.detectedItems ?? []);
+          router.replace("/scan/confirm");
+        },
+        onError: (error) => {
+          setIsCapturing(false);
+          router.back();
+          Alert.alert("Scan failed", error instanceof Error ? error.message : "Please try again.");
+        },
+      },
+    );
+  }
+
   return (
     <View className="flex-1 bg-black">
       {permission?.granted ? (
         <CameraView
+          ref={cameraRef}
           style={StyleSheet.absoluteFill}
           facing="back"
           mode="picture"
@@ -69,7 +109,8 @@ export default function Camera() {
         </View>
         <Pressable
           className="w-[76px] h-[76px] rounded-[38px] border-[4px] border-white items-center justify-center"
-          onPress={() => permission?.granted && router.push("/scan/processing")}
+          onPress={handleCapture}
+          disabled={isCapturing}
         >
           <View className="w-[60px] h-[60px] rounded-[30px] bg-white" />
         </Pressable>

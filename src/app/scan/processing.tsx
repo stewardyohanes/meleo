@@ -9,14 +9,14 @@ export default function Processing() {
   const router = useRouter();
   const [step, setStep] = useState(0);
 
+  // Purely decorative — the real /scans call runs in camera.tsx and
+  // replaces this route with /scan/confirm (or bounces back on error)
+  // once the response lands. This loop just animates while it waits.
   useEffect(() => {
-    if (step >= STEPS.length) {
-      router.replace('/scan/confirm');
-      return;
-    }
+    if (step >= STEPS.length) return;
     const t = setTimeout(() => setStep((s) => s + 1), STEP_MS);
     return () => clearTimeout(t);
-  }, [step, router]);
+  }, [step]);
 
   return (
     <View className="flex-1 bg-black">
